@@ -1,47 +1,59 @@
 const track = document.getElementById('carouselTrack');
 const nextBtn = document.getElementById('nextBtn');
 const prevBtn = document.getElementById('prevBtn');
+const slides = Array.from(track.children);
 
-let index = 0;
+let currentIndex = 0;
 
 function updateCarousel() {
-    const slideWidth = track.firstElementChild.offsetWidth + 32; // width + gap
-    track.style.transform = `translateX(-${index * slideWidth}px)`;
+    slides.forEach((slide, i) => {
+        let offset = i - currentIndex;
+        slide.classList.remove('active');
+
+        if (offset === 0) {
+            slide.classList.add('active');
+            slide.style.transform = `translateX(0) translateZ(200px) rotateY(0deg)`;
+            slide.style.opacity = "1";
+            slide.style.zIndex = "10";
+        } else {
+            let rotateY = offset > 0 ? -45 : 45;
+            let translateX = offset * 180;
+            slide.style.transform = `translateX(${translateX}px) translateZ(0) rotateY(${rotateY}deg)`;
+            slide.style.opacity = "0.4";
+            slide.style.zIndex = (10 - Math.abs(offset));
+        }
+    });
 }
 
 nextBtn.addEventListener('click', () => {
-    const slides = track.children.length;
-    const visibleSlides = window.innerWidth > 968 ? 2 : 1;
-    if (index < slides - visibleSlides) {
-        index++;
-        updateCarousel();
-    } else {
-        index = 0; // Loop back
-        updateCarousel();
-    }
+    currentIndex = (currentIndex + 1) % slides.length;
+    updateCarousel();
 });
 
 prevBtn.addEventListener('click', () => {
-    if (index > 0) {
-        index--;
-        updateCarousel();
-    } else {
-        const slides = track.children.length;
-        const visibleSlides = window.innerWidth > 968 ? 2 : 1;
-        index = slides - visibleSlides; // Loop to end
-        updateCarousel();
-    }
+    currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+    updateCarousel();
 });
 
-// CTA smooth scroll
-document.getElementById("ctaBtn").addEventListener("click", () => {
-  document
-    .getElementById("investing")
-    .scrollIntoView({ behavior: "smooth" });
+// Initialize
+updateCarousel();
+
+// Smooth scroll for nav links and CTA
+document.querySelectorAll('a[href^="#"], #ctaBtn').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href') || '#contact';
+        const targetElement = document.querySelector(targetId === '#' ? 'body' : targetId);
+
+        if (targetElement) {
+            targetElement.scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+    });
 });
 
 // Handle window resize
 window.addEventListener('resize', () => {
-    index = 0;
     updateCarousel();
 });
