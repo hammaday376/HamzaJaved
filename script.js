@@ -6,23 +6,65 @@ const slides = Array.from(track.children);
 let currentIndex = 0;
 
 function updateCarousel() {
+    const isMobile = window.innerWidth <= 968;
+    const spacing = isMobile ? 110 : 160; // Reduced spacing as suggested 
+    const rotateDeg = isMobile ? 30 : 45;
+    const zTranslate = isMobile ? 120 : 250;
+
     slides.forEach((slide, i) => {
         let offset = i - currentIndex;
         slide.classList.remove('active');
 
         if (offset === 0) {
             slide.classList.add('active');
-            slide.style.transform = `translateX(0) translateZ(200px) rotateY(0deg)`;
+            slide.style.transform = `translateX(0) translateZ(${zTranslate}px) rotateY(0deg) scale(1)`;
             slide.style.opacity = "1";
-            slide.style.zIndex = "10";
+            slide.style.zIndex = "20";
+            slide.style.filter = "blur(0) brightness(1)";
         } else {
-            let rotateY = offset > 0 ? -45 : 45;
-            let translateX = offset * 180;
+            let rotateY = offset > 0 ? -rotateDeg : rotateDeg;
+            let translateX = offset * spacing;
+
+            // Limit visible slides on mobile
+            if (isMobile && Math.abs(offset) > 1) {
+                slide.style.opacity = "0";
+                slide.style.pointerEvents = "none";
+                slide.style.visibility = "hidden";
+            } else {
+                slide.style.opacity = isMobile ? "0.3" : "0.4";
+                slide.style.pointerEvents = "auto";
+                slide.style.visibility = "visible";
+            }
+
             slide.style.transform = `translateX(${translateX}px) translateZ(0) rotateY(${rotateY}deg)`;
-            slide.style.opacity = "0.4";
             slide.style.zIndex = (10 - Math.abs(offset));
+            slide.style.filter = "blur(3px) brightness(0.4)";
         }
     });
+}
+
+// Touch support
+let touchStartX = 0;
+let touchEndX = 0;
+
+track.addEventListener('touchstart', e => {
+    touchStartX = e.changedTouches[0].screenX;
+}, { passive: true });
+
+track.addEventListener('touchend', e => {
+    touchEndX = e.changedTouches[0].screenX;
+    handleSwipe();
+}, { passive: true });
+
+function handleSwipe() {
+    if (touchEndX < touchStartX - 50) {
+        currentIndex = (currentIndex + 1) % slides.length;
+        updateCarousel();
+    }
+    if (touchEndX > touchStartX + 50) {
+        currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+        updateCarousel();
+    }
 }
 
 nextBtn.addEventListener('click', () => {

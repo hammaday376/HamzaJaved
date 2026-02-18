@@ -77,8 +77,6 @@ body::before {
   top: 0;
   width: 100%;
   z-index: 1000;
-  pointer-events: none;
-  /* Allow clicks to pass through to sections if needed, but we'll enable it for children */
 }
 
 .logo {
@@ -86,31 +84,30 @@ body::before {
   font-weight: 800;
   color: var(--text-light);
   letter-spacing: 2px;
-  pointer-events: auto;
   text-shadow: 0 0 20px rgba(128, 0, 0, 0.5);
 }
 
 .navbar {
   display: flex;
   gap: 0.5rem;
-  padding: 0.7rem 2rem;
+  padding: 0.7rem 1.5rem;
   background: rgba(40, 0, 0, 0.6);
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 100px;
-  pointer-events: auto;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
 }
 
 .navbar a {
-  margin: 0 1rem;
+  margin: 0 0.8rem;
   text-decoration: none;
   color: #fff;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   transition: 0.3s ease;
   opacity: 0.8;
+  white-space: nowrap;
 }
 
 .navbar a:hover {
@@ -168,7 +165,6 @@ body::before {
   justify-content: center;
   position: relative;
   margin-top: 5rem;
-  /* Pushed photo even further down */
 }
 
 .hero-image img {
@@ -236,6 +232,7 @@ body::before {
   margin: 0 auto;
   background: rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   padding: 3.5rem;
   border-radius: 30px;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -293,28 +290,28 @@ body::before {
 
 .carousel-slide {
   min-width: 320px;
-  /* Smaller width */
   max-width: 320px;
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(20px);
-  padding: 2rem;
-  /* Reduced padding */
-  border-radius: 2rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  padding: 2.5rem;
+  border-radius: 2.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
   transform-style: preserve-3d;
   position: relative;
   opacity: 0.5;
-  filter: grayscale(80%);
+  filter: blur(2px) brightness(0.5);
 }
 
 .carousel-slide.active {
   opacity: 1;
-  filter: grayscale(0%);
-  transform: translateZ(200px);
-  z-index: 10;
+  filter: blur(0) brightness(1);
+  transform: translateZ(250px) scale(1.05);
+  z-index: 20;
   border-color: var(--accent);
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+  background: rgba(128, 0, 0, 0.15);
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.7), 0 0 40px rgba(255, 77, 77, 0.3);
 }
 
 .slide-img {
@@ -352,7 +349,7 @@ body::before {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.2);
 }
 
 .carousel-slide h3 {
@@ -377,25 +374,38 @@ body::before {
   align-items: center;
   gap: 2rem;
   margin-top: 3rem;
+  position: relative;
+  z-index: 100;
+  pointer-events: auto;
+  transform: translateZ(500px);
+  /* Push in front of 3D slides */
 }
 
 .control-btn {
   background: var(--maroon);
   color: white;
-  border: none;
-  width: 50px;
-  height: 50px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.2rem;
-  transition: 0.3s;
+  font-size: 1.4rem;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  -webkit-tap-highlight-color: transparent;
 }
 
 .control-btn:hover {
   background: var(--accent);
+  transform: scale(1.1);
+  box-shadow: 0 15px 30px rgba(255, 77, 77, 0.4);
+}
+
+.control-btn:active {
+  transform: scale(0.9);
 }
 
 /* INVESTING */
@@ -464,6 +474,7 @@ body::before {
   height: 80px;
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 24px;
   display: flex;
@@ -504,27 +515,101 @@ footer {
 @media (max-width: 968px) {
   .header-container {
     display: none;
-    /* Hide header on mobile */
   }
 
   .hero {
     flex-direction: column;
     text-align: center;
-    padding-top: 10rem;
+    padding: 6rem 5% 4rem;
     height: auto;
+    min-height: 100vh;
+    justify-content: center;
+  }
+
+  .hero-container {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
   }
 
   .hero h1 {
-    font-size: 3rem;
+    font-size: 2.8rem;
+    width: 100%;
+  }
+
+  .hero p {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-image {
+    margin-top: 4rem;
   }
 
   .hero-image img {
+    width: 260px;
+    height: 350px;
+  }
+
+  .section {
+    padding: 5rem 5%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .bio-card {
+    padding: 2.5rem 1.5rem;
     width: 100%;
-    max-width: 400px;
-    height: auto;
+    border-left: none;
+    border-top: 4px solid var(--maroon);
+  }
+
+  .carousel-container {
+    perspective: 1500px;
+    padding: 3rem 0;
+    width: 100%;
+    margin-top: 1rem;
+    overflow: visible;
   }
 
   .carousel-slide {
-    min-width: 100%;
+    min-width: 250px;
+    max-width: 250px;
+    padding: 1.5rem;
+    border-radius: 2rem;
+  }
+
+  .carousel-slide.active {
+    transform: translateZ(120px) !important;
+    z-index: 50;
+  }
+
+  .slide-img {
+    height: 160px;
+    margin-bottom: 1.5rem;
+  }
+
+  .contact-grid {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .focus {
+    gap: 1rem;
+  }
+
+  .focus span {
+    padding: 0.6rem 1.5rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero h1 {
+    font-size: 2.2rem;
   }
 }
